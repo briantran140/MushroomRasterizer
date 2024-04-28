@@ -1,8 +1,8 @@
 // Get a reference to the canvas we will draw to
 const canvas = document.querySelector("#canvas");
 
-const bufferSize = 200;
-const scaleFactor = bufferSize / 10;
+const bufferSize = 800;
+const scaleFactor = bufferSize / 12;
 canvas.width = bufferSize;
 canvas.height = bufferSize;
 const ctx = canvas.getContext("2d");
@@ -19,7 +19,7 @@ const triangles = [];
 lines.map((line) => {
   const split = line.trim().split(" ");
   if (split[0] == "v") {
-    //Handle vertex information
+    // Handle vertex information
     const x = +split[1];
     const y = +split[2];
     const z = +split[3];
@@ -41,14 +41,14 @@ lines.map((line) => {
     vns.push(vn);
   }
   if (split[0] == "vt") {
-    //Handle UV (texture) coordinate information
+    // Handle UV (texture) coordinate information
     const u = +split[1];
     const v = +split[2];
     const vt = new Vertex2(u, v);
     vts.push(vt);
   }
   if (split[0] == "f") {
-    //Handle information about each triangle
+    // Handle information about each triangle
     let one = split[1];
     const two = split[2];
     const three = split[3];
@@ -69,7 +69,7 @@ lines.map((line) => {
   }
 });
 
-//End obj parsing
+// End obj parsing
 
 let zBuffer = [];
 
@@ -97,7 +97,7 @@ function render() {
   let useBackFaceCulling = true;
   let useOneTriangle = false;
 
-  //First clear the zBuffer
+  // First clear the zBuffer
   zBuffer = [];
   for (let x = 0; x < bufferWidth; x++) {
     const col = [];
@@ -107,20 +107,20 @@ function render() {
     zBuffer.push(col);
   }
 
-  //Loop over all the triangles and draw them to the screen
+  // Loop over all the triangles and draw them to the screen
 
   for (let index = 0; index < triangles.length; index++) {
-    //Just show one triangle for debugging
+    // Just show one triangle for debugging
     if (useOneTriangle) if (index != 1) continue;
 
-    //Get clones of the current triangle vertices so that we don't alter the original geometry
+    // Get clones of the current triangle vertices so that we don't alter the original geometry
     const one = triangles[index].vertexOne.getClone();
     const two = triangles[index].vertexTwo.getClone();
     const three = triangles[index].vertexThree.getClone();
 
     //Update the rotation if we are doing a simple animation
     if (useAnimation) {
-      let angle = tick / 10;
+      let angle = tick / 2;
 
       let out = rotate(one.x, one.z, angle);
       one.x = out.x;
@@ -135,15 +135,15 @@ function render() {
       three.z = out.y;
     }
 
-    //Setup the camera information for perspective calculations
+    // Setup the camera information for perspective calculations
     const cameraFromZ = bufferSize / 2 + bufferSize / 8 + 5;
     const cameraToZ = bufferSize / 8 + 5;
     const cameraLengthZ = cameraFromZ - cameraToZ;
 
-    //Track the points once we do perspective
+    // Track the points once we do perspective
     const points = [one, two, three];
 
-    //Loop over the points and apply perspective
+    // Loop over the points and apply perspective
     if (usePerspective) {
       points.map((point) => {
         const distanceZ = cameraFromZ - point.z;
@@ -167,7 +167,7 @@ function render() {
       if (normal.z < 0) continue;
     }
 
-    //Draw the triangle onto the zBuffer
+    // Draw the triangle onto the zBuffer
     const a = new Vertex2(one.x, one.y);
     const b = new Vertex2(two.x, two.y);
     const c = new Vertex2(three.x, three.y);
@@ -191,13 +191,13 @@ function render() {
       const minX = Math.min(...matching.map((p) => p.x));
       const maxX = Math.max(...matching.map((p) => p.x));
       for (let x = minX; x <= maxX; x++) {
-        //Now calculate the color
+        // Calculate the color
         const toSun = new Vertex3(1, 0, 1).getNormalized();
         let diffuse = normal.getDot(toSun);
         diffuse = Math.max(0, diffuse);
-        let r = 255;
-        let g = 255;
-        let b = 255;
+        let r = 26;
+        let g = 53;
+        let b = 62;
 
         r *= diffuse;
         g *= diffuse;
@@ -208,9 +208,9 @@ function render() {
         g += ambient;
         b += ambient;
 
-        r = Math.max(0, Math.min(255, r));
-        g = Math.max(0, Math.min(255, g));
-        b = Math.max(0, Math.min(255, b));
+        r = Math.max(0, Math.min(26, r));
+        g = Math.max(0, Math.min(53, g));
+        b = Math.max(0, Math.min(62, b));
 
         zBuffer[x][y] = new Pixel(x, y, r, g, b);
       }
@@ -232,15 +232,15 @@ function render() {
     }
   }
 
-  //Increment the tick for animation purposes
+  // Increment the tick for animation purposes
   tick++;
 }
 
-//Keep track of how many frames we have seen so that we can do simple animation
+// Keep track of how many frames we have seen so that we can do simple animation
 let tick = 0;
 
 if (useAnimation) {
-  setInterval(render, 100);
+  setInterval(render, 10);
 } else {
   render();
 }

@@ -3,34 +3,39 @@ class Edge {
     this.vertexOne = vertexOne;
     this.vertexTwo = vertexTwo;
   }
+
   getTangent() {
     return this.vertexTwo.getSubtract(this.vertexOne);
   }
+
   getNormalizedTangent() {
     return this.getTangent().getNormalized();
   }
+
   getPerpendicular() {
     return this.getNormalizedTangent().getPerpendicular();
   }
+
   getABC() {
-    let AB = this.getPerpendicular();
-    let dot = AB.getDot(this.vertexOne);
-    let C = -dot;
+    const AB = this.getPerpendicular();
+    const dot = AB.getDot(this.vertexOne);
+    const C = -dot;
     return { A: AB.x, B: AB.y, C };
   }
+
   getPixels() {
-    let startX = this.vertexOne.x;
-    let startY = this.vertexOne.y;
+    const startX = this.vertexOne.x;
+    const startY = this.vertexOne.y;
 
-    let toReturn = [];
+    const toReturn = [];
 
-    let tangent = this.getNormalizedTangent();
-    let absX = Math.abs(tangent.x);
-    let absY = Math.abs(tangent.y);
-    let m = Math.max(absX, absY);
-    let inverse = 1 / m;
-    let offTangent = new Vertex2(tangent.x * inverse, tangent.y * inverse);
-    let steps = this.getTangent().getLength() / offTangent.getLength();
+    const tangent = this.getNormalizedTangent();
+    const absX = Math.abs(tangent.x);
+    const absY = Math.abs(tangent.y);
+    const m = Math.max(absX, absY);
+    const inverse = 1 / m;
+    const offTangent = new Vertex2(tangent.x * inverse, tangent.y * inverse);
+    const steps = this.getTangent().getLength() / offTangent.getLength();
 
     let x = startX;
     let y = startY;
