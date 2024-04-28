@@ -111,14 +111,13 @@ function render() {
     zBuffer.push(col);
   }
 
-  //Loop over all the triangles
-  //And draw them to the screen
+  //Loop over all the triangles and draw them to the screen
+
   for (let index = 0; index < triangles.length; index++) {
     //Just show one triangle for debugging
     if (useOneTriangle) if (index != 1) continue;
 
-    //Get clones of the current triangle vertices
-    //so that we don't alter the original geometry
+    //Get clones of the current triangle vertices so that we don't alter the original geometry
     const one = triangles[index].vertexOne.getClone();
     const two = triangles[index].vertexTwo.getClone();
     const three = triangles[index].vertexThree.getClone();
@@ -241,9 +240,7 @@ function render() {
   tick++;
 }
 
-//Keep track of how many frames we have seen so that we can
-//do simple animation if we want.
-
+//Keep track of how many frames we have seen so that we can do simple animation
 let tick = 0;
 
 if (useAnimation) {
