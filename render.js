@@ -58,8 +58,6 @@ lines.map((line) => {
     groups.map((groupItem) => {
       const group = groupItem.split("/");
       const vIndex = +group[0] - 1;
-      const vnIndex = +group[1] - 1;
-      const vtIndex = +group[2] - 1;
 
       const v = vs[vIndex];
 
