@@ -21,8 +21,6 @@ class Edge {
   getPixels() {
     let startX = this.vertexOne.x;
     let startY = this.vertexOne.y;
-    let endX = this.vertexTwo.x;
-    let endY = this.vertexTwo.y;
 
     let toReturn = [];
 

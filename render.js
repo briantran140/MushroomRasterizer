@@ -62,8 +62,6 @@ lines.map((line) => {
       const vtIndex = +group[2] - 1;
 
       const v = vs[vIndex];
-      const vn = vns[vnIndex];
-      const vt = vts[vtIndex];
 
       points.push(v);
     });
