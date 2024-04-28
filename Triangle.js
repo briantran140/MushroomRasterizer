@@ -1,4 +1,4 @@
-// this has to be counter clockwise
+// counter clockwise
 class Triangle {
   constructor(vertexOne, vertexTwo, vertexThree) {
     this.vertexOne = vertexOne;
