@@ -23,7 +23,7 @@ class Edge {
     return { A: AB.x, B: AB.y, C };
   }
 
-  getPixels() {
+  getPixels(r, g, b) {
     const startX = this.vertexOne.x;
     const startY = this.vertexOne.y;
 
@@ -43,7 +43,7 @@ class Edge {
     let count = 0;
     while (count < steps) {
       count++;
-      toReturn.push(new Pixel(Math.round(x), Math.round(y), 27, 122, 159));
+      toReturn.push(new Pixel(Math.round(x), Math.round(y), r, g, b));
       x += offTangent.x;
       y += offTangent.y;
     }

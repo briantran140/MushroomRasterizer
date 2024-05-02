@@ -1,7 +1,7 @@
 // Get a reference to the canvas we will draw to
 const canvas = document.querySelector("#canvas");
 
-const bufferSize = 800;
+const bufferSize = 400;
 const scaleFactor = bufferSize / 12;
 canvas.width = bufferSize;
 canvas.height = bufferSize;
@@ -15,6 +15,24 @@ const vs = [];
 const vns = [];
 const vts = [];
 const triangles = [];
+
+const materialProperties = ["Ns", "Ka", "Kd", "Ks", "Ke", "Ni", "d", "illum"];
+let color;
+let currentMaterial;
+const materialLines = mushroomMaterial.split("\n");
+const materials = {};
+
+materialLines.map((materialLine) => {
+  let split = materialLine.trim().split(" ");
+  if (split[0] == "newmtl") {
+    currentMaterial = split[1];
+    materials[currentMaterial] = {};
+  }
+
+  if (materialProperties.includes(split[0])) {
+    materials[currentMaterial][split[0]] = split.slice(1).map(parseFloat);
+  }
+});
 
 lines.map((line) => {
   const split = line.trim().split(" ");
@@ -64,8 +82,14 @@ lines.map((line) => {
       points.push(v);
     });
 
-    const triangle = new Triangle(points[0], points[1], points[2]);
+    color = materials[currentMaterial]?.["Kd"];
+
+    const triangle = new Triangle(points[0], points[1], points[2], color);
     triangles.push(triangle);
+  }
+
+  if (split[0] == "usemtl") {
+    currentMaterial = split[1];
   }
 });
 
@@ -176,9 +200,21 @@ function render() {
     const e2 = new Edge(b, c);
     const e3 = new Edge(c, a);
 
-    const pixels1 = e1.getPixels();
-    const pixels2 = e2.getPixels();
-    const pixels3 = e3.getPixels();
+    const pixels1 = e1.getPixels(
+      triangles[index].color[0] * 255,
+      triangles[index].color[1] * 255,
+      triangles[index].color[2] * 255
+    );
+    const pixels2 = e2.getPixels(
+      triangles[index].color[0] * 255,
+      triangles[index].color[1] * 255,
+      triangles[index].color[2] * 255
+    );
+    const pixels3 = e3.getPixels(
+      triangles[index].color[0] * 255,
+      triangles[index].color[1] * 255,
+      triangles[index].color[2] * 255
+    );
 
     const allEdgePixels = [...pixels1, ...pixels2, ...pixels3];
     const minY = Math.min(...allEdgePixels.map((p) => p.y));
@@ -195,9 +231,9 @@ function render() {
         const toSun = new Vertex3(1, 0, 1).getNormalized();
         let diffuse = normal.getDot(toSun);
         diffuse = Math.max(0, diffuse);
-        let r = 26;
-        let g = 53;
-        let b = 62;
+        let r = triangles[index].color[0] * 255;
+        let g = triangles[index].color[1] * 255;
+        let b = triangles[index].color[2] * 255;
 
         r *= diffuse;
         g *= diffuse;
@@ -208,18 +244,17 @@ function render() {
         g += ambient;
         b += ambient;
 
-        r = Math.max(0, Math.min(26, r));
-        g = Math.max(0, Math.min(53, g));
-        b = Math.max(0, Math.min(62, b));
-
+        r = Math.max(0, r);
+        g = Math.max(0, g);
+        b = Math.max(0, b);
         zBuffer[x][y] = new Pixel(x, y, r, g, b);
       }
     }
-    allEdgePixels.map((pixel) => {
-      const x = Math.max(0, pixel.x);
-      const y = Math.max(0, pixel.y);
-      zBuffer[x][y] = pixel;
-    });
+    // allEdgePixels.map((pixel) => {
+    // const x = Math.max(0, pixel.x);
+    // const y = Math.max(0, pixel.y);
+    // zBuffer[x][y] = pixel;
+    // });
   }
 
   // Draw the buffer
