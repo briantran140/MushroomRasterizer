@@ -2,12 +2,10 @@
 const canvas = document.querySelector("#canvas");
 
 const bufferSize = 400;
-const scaleFactor = bufferSize / 12;
+const scaleFactor = bufferSize / 10;
 canvas.width = bufferSize;
 canvas.height = bufferSize;
 const ctx = canvas.getContext("2d");
-ctx.fillStyle = "red";
-ctx.fillRect(0, 0, 100, 100);
 
 //Start parsing the obj file
 const lines = obj.split("\n");
@@ -126,7 +124,7 @@ function render() {
   for (let x = 0; x < bufferWidth; x++) {
     const col = [];
     for (let y = 0; y < bufferHeight; y++) {
-      col.push(new Pixel(x, y, 135, 206, 235, 1000));
+      col.push(new Pixel(x, y, 238, 238, 238, 1000));
     }
     zBuffer.push(col);
   }
